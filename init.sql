@@ -1,0 +1,1 @@
+CREATE TABLE pijawcabot (ids SERIAL, user_id BIGINT PRIMARY KEY, nickname TEXT, who_is TEXT);

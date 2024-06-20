@@ -1,8 +1,6 @@
+import requests
 import sys
 import os
-import requests
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import API_KEY_MARKETCAP as api_key
 
 

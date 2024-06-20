@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: HW67lV0LeG9I2vmIYQTiLO6k
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+  
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:  
+      PGADMIN_DEFAULT_EMAIL: devpijawca@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: HW67lV0LeG9I2vmIYQTiLO6k
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - 80:80
+    networks:
+      - postgres
+    restart: unless-stopped
+  
+  pijawcabot:
+    container_name: pijawcabot
+    build: .
+    volumes:
+      - pijawcabot:/data/pijawcabot
+    command: sh -c "python -m run"
+    networks:
+      - postgres
+    restart: always
+    depends_on:
+      - postgres
+      - pgadmin
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+    postgres:
+    pgadmin:
+    pijawcabot:

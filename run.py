@@ -1,5 +1,5 @@
 import asyncio
-from misc import dp, bot
+from handlers.misc import dp, bot
 from handlers import general
 
 
