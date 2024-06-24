@@ -1,1 +1,1 @@
-from handlers import abcd, general, misc
+from handlers import abcd, general, keyboards, misc

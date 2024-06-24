@@ -18,17 +18,33 @@ def add_user(user_id, nickname, who_is):
                 conn.commit()
                 response = 1
     finally:
+        cur.close()
         conn.close()
     return response
 
-def get_user_data(user_id):
+def dbconn():
     try:
         conn = psycopg.connect(**db_params)
         with conn.cursor() as cur:
-            cur.execute("SELECT who_is FROM pijawcabot WHERE user_id = %s", (user_id,))
-            result = cur.fetchone()
-    except Exception as e:
-        print(e) 
+            cur.execute("SELECT version();")
+            db_version = cur.fetchone()
+            response = f'Подключение к базе данных PostgreSQL успешно. \nВерсия PostgreSQL: {db_version}'
+    except (Exception, psycopg.Error) as error:
+        response = f'Ошибка PostgreSQL: {error}'
     finally:
+        cur.close()
         conn.close()
-    return result[0]
+    return response
+        
+def get_users(user_id):
+    try:
+        conn = psycopg.connect(**db_params)
+        with conn.cursor() as cur:
+            cur.execute("SELECT who_is FROM pijawcabot WHERE user_id = %s;", (user_id,))
+            response = cur.fetchone()[0]
+    except (Exception, psycopg.Error) as error:
+        response = f'Ошибка PostgreSQL: {error}'
+    finally:
+        cur.close()
+        conn.close()
+    return response
