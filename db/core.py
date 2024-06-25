@@ -2,12 +2,12 @@ import psycopg
 from config import db_params
 
 
-def add_user(user_id, nickname, who_is):
+def add_user(user_id, nickname):
     try:
         conn = psycopg.connect(**db_params)
         with conn.cursor() as cur:
             cur.execute("INSERT INTO pijawcabot (user_id, nickname, who_is) VALUES (%s, %s, %s)",
-                        (user_id, nickname, who_is))
+                        (user_id, nickname, 'Пользователь'))
             conn.commit()
             response = 0
     except Exception as e:

@@ -1,8 +1,11 @@
-@router.message(StateFilter(None), Command("food"))
-async def cmd_food(message: Message, state: FSMContext):
-    await message.answer(
-        text="Выберите блюдо:",
-        reply_markup=make_row_keyboard(available_food_names)
-    )
-    # Устанавливаем пользователю состояние "выбирает название"
-    await state.set_state(OrderFood.choosing_food_name)
+total = 6700
+now = 5875.01736
+
+difference = now - total
+
+if difference > 0:
+    print("Разность положительная")
+elif difference < 0:
+    print("Разность отрицательная")
+else:
+    print("Разность равна нулю")

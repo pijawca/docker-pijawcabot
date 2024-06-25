@@ -1,6 +1,4 @@
 import requests
-import sys
-import os
 from config import API_KEY_MARKETCAP as api_key
 
 

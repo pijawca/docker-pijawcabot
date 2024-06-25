@@ -3,7 +3,7 @@ from plugins import cryptoparse
 from db.core import dbconn
 
 
-def text_start(username, who_is):
+def start(username, who_is):
     current_hour = datetime.now().hour
     
     if 5 <= current_hour < 12:
@@ -20,9 +20,7 @@ def text_start(username, who_is):
     
 Вы состоите в группе как *{who_is}*
 
-Используйте клавиатуру либо команды:
-_у команд есть короткий вызов используя только первую букву
-/admin  |  /support  |  /bots  |  /payment  |  /checkwallet_
+_Используйте клавиатуру, либо команды в меню бота_
     '''
     return text
 
@@ -54,9 +52,11 @@ def support():
     text= f'''
 *Прямые ссылки*
 
-Владелец *pijawca* @pijawca - (По всем вопросам.)
+Администратор *pijawca* @pijawca - (По всем вопросам.)
 Поддержка *pass* @pass
 Поддержка *pass* @pass
+
+Канал @pijawcatoday
     '''
     return text
 
@@ -66,5 +66,24 @@ def show_wallet():
 '''
     return text
 
-def bots():
-    pass
+def crypto():
+    payed = 6700
+    ton = 9.272
+    math = float(cryptoparse.ton_status()[2]) * 9.272
+    total = int(math - payed)
+    if total > 0:
+        msg = f'🙂 {total}'
+    elif total < 0:
+        msg = f'😔 {total}'
+    
+    text= f'''
+*TON*
+
+*$ {cryptoparse.ton_status()[0]}  |  ₽ {cryptoparse.ton_status()[2]}*
+vol {cryptoparse.ton_status()[5]}
+1h {cryptoparse.ton_status()[3]}  |  24h {cryptoparse.ton_status()[1]}  |  7d {cryptoparse.ton_status()[4]}
+
+*TOTAL {payed}  |  {ton}*
+{msg}
+'''
+    return text 
