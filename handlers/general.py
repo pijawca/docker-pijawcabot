@@ -1,21 +1,21 @@
 from handlers import abcd
 from aiogram import types, Dispatcher
-from aiogram.filters.command import Command
 from aiogram.enums import ParseMode
 from aiogram.types import CallbackQuery
 from aiogram.fsm.state import State, StatesGroup
+from aiogram.filters import Command, StateFilter
+from aiogram.fsm.context import FSMContext
 from handlers.misc import bot
 from db.core import add_user, get_users
-from handlers.keyboards import user_kb, admin_kb, deal_kb, bots_kb, feedback
+from handlers.keyboards import user_kb, admin_kb, deal_kb, bots_kb, feedback, pijawcatoday_kb
 
+class MessagetopijawcaToday(StatesGroup):
+    waiting_for_message = State()
 
-class give_rights(StatesGroup):
-    get_user_id = State()
-
-class Client_menu:
+class ClientMenu:
     async def start(message: types.Message):
-        user_id=message.from_user.id
-        username=message.from_user.username
+        user_id = message.from_user.id
+        username = message.from_user.username
         add_user(user_id, username)
         
         await message.answer(
@@ -38,54 +38,62 @@ class Client_menu:
                 chat_id=message.chat.id,
                 sticker=r'CAACAgIAAxkBAAEJtMtks8sbeOwMwVjhgqs7oqsyn3oyQQACbBQAAqhl2Unugzno4GtRUy8E')
 
-        
     async def support(message: types.Message):
         await message.answer(text=abcd.text_open_button(message.text),
                              reply_markup=feedback())
         await bot.send_video(
             chat_id=message.chat.id,
             video=r'https://s9.gifyu.com/images/animation042e91e4ca542b38.gif')
-        
+
     async def deal(message: types.Message):
         await message.answer(text=abcd.text_open_button(message.text),
                              reply_markup=deal_kb())
-        
+
     async def bots(message: types.Message):
         await message.answer(text=abcd.text_open_button(message.text),
                              reply_markup=bots_kb())
-    
-class Administration_menu:
+
+class AdministrationMenu:
     async def dbconn(message: types.Message):
         await message.answer(text=abcd.text_dbconn())
-    
+
     async def crypto(message: types.Message):
         await message.answer(text=abcd.crypto(),
                              parse_mode=ParseMode.MARKDOWN)
+
+    async def pijawca_today(message: types.Message, state: FSMContext):
+        await bot.send_message(chat_id=message.from_user.id, text=abcd.pijawcatoday())
+        await state.set_state(MessagetopijawcaToday.waiting_for_message)
         
-    async def pass2(message: types.Message):
-        await message.answer(text=abcd.passed())
-        
+    async def handler_pijawca_today(message: types.Message, state: FSMContext):
+        user_message = message.text
+        await message.reply(text=f'{user_message}\n Все верно?',
+                            reply_markup=pijawcatoday_kb())
+        await state.clear()
+
     async def pass3(message: types.Message):
         await message.answer(text=abcd.passed())
-        
+
     async def pass4(message: types.Message):
         await message.answer(text=abcd.passed())
-    
+
     async def back(message: types.Message):
         await message.answer(text=abcd.text_open_button(message.text),
-                            reply_markup=user_kb())
+                             reply_markup=user_kb())
 
-async def process_callback(callback_query: CallbackQuery):
+async def process_callback(callback_query: types.CallbackQuery, message: types.Message):
     data = callback_query.data
-    if data == 'test_pay':
-        await bot.send_message(callback_query.from_user.id, 'К сожалению в данный момент не работает. Заявка на рассмотрении у TON Wallet')
-    elif data == 'half_pay':
-        await bot.send_message(callback_query.from_user.id, 'К сожалению в данный момент не работает. Заявка на рассмотрении у TON Wallet')
-    elif data == 'one_pay':
-        await bot.send_message(callback_query.from_user.id, 'К сожалению в данный момент не работает. Заявка на рассмотрении у TON Wallet')
-    elif data == 'show_wallet':
-        await bot.send_message(callback_query.from_user.id, abcd.show_wallet(),
-                               parse_mode=ParseMode.MARKDOWN)
+    user_id = callback_query.from_user.id
+
+    responses = {
+        'test_pay': 'К сожалению в данный момент не работает. Заявка на рассмотрении у TON Wallet',
+        'half_pay': 'К сожалению в данный момент не работает. Заявка на рассмотрении у TON Wallet',
+        'one_pay': 'К сожалению в данный момент не работает. Заявка на рассмотрении у TON Wallet',
+        'show_wallet': abcd.show_wallet()
+    }
+
+    if data in responses:
+        await bot.send_message(user_id, responses[data], parse_mode=ParseMode.MARKDOWN)
     elif data == 'strojstavbot':
         await bot.send_message(callback_query.from_user.id)
     elif data == 'coder_link':
@@ -96,17 +104,26 @@ async def process_callback(callback_query: CallbackQuery):
         await bot.send_message(callback_query.from_user.id)
     elif data == 'channel':
         await bot.send_message(callback_query.from_user.id)
+    elif data == 'yes':
+        await bot.send_message(chat_id='-1002193353022', text=message.text)
+        await bot.answer_callback_query(callback_query.id, text='Сообщение отправлено в группу!')
+    elif data == 'no':
+        await bot.answer_callback_query(callback_query.id, text='Сообщение было очищенно!')
+    else:
+        await bot.answer_callback_query(callback_query.id, text='Неизвестная команда')
+
 
 def register_handlers_commands(dp: Dispatcher):
-    dp.message.register(Client_menu.start, Command(commands=['start', 's']))
-    dp.message.register(Client_menu.administration, lambda message: message.text in ['⚙️ Администрирование', '/a', '/admin'])
-    dp.message.register(Client_menu.deal, lambda message: message.text in ['🤝 Сделка', '/d', '/deal'])
-    dp.message.register(Client_menu.bots, lambda message: message.text in ['🔩 Список ботов', '/l', '/listbots'])
-    dp.message.register(Client_menu.support, lambda message: message.text in ['💌 Связаться', '/f', '/feedback'])
-    dp.message.register(Administration_menu.dbconn, lambda message: message.text == '🟨 Тест с базой')
-    dp.message.register(Administration_menu.back, lambda message: message.text == '↩️ Назад')
-    dp.message.register(Administration_menu.crypto, lambda message: message.text == 'Чек кошелька')
-    dp.message.register(Administration_menu.pass2, lambda message: message.text == 'pass2') 
-    dp.message.register(Administration_menu.pass3, lambda message: message.text == 'pass3')
-    dp.message.register(Administration_menu.pass4, lambda message: message.text == 'pass4')
+    dp.message.register(ClientMenu.start, Command(commands=['start', 's']))
+    dp.message.register(ClientMenu.administration, lambda message: message.text in ['⚙️ Администрирование', '/a', '/admin'])
+    dp.message.register(ClientMenu.deal, lambda message: message.text in ['🤝 Сделка', '/d', '/deal'])
+    dp.message.register(ClientMenu.bots, lambda message: message.text in ['🔩 Список ботов', '/l', '/listbots'])
+    dp.message.register(ClientMenu.support, lambda message: message.text in ['💌 Связаться', '/f', '/feedback'])
+    dp.message.register(AdministrationMenu.dbconn, lambda message: message.text == '🟨 Тест с базой')
+    dp.message.register(AdministrationMenu.back, lambda message: message.text == '↩️ Назад')
+    dp.message.register(AdministrationMenu.crypto, lambda message: message.text == 'Чек кошелька')
+    dp.message.register(AdministrationMenu.pijawca_today, lambda message: message.text == 'pijawcatoday') 
+    dp.message.register(AdministrationMenu.handler_pijawca_today, StateFilter(MessagetopijawcaToday.waiting_for_message)) 
+    dp.message.register(AdministrationMenu.pass3, lambda message: message.text == 'pass3')
+    dp.message.register(AdministrationMenu.pass4, lambda message: message.text == 'pass4')
     dp.callback_query.register(process_callback)

@@ -21,6 +21,9 @@ coder_link = InlineKeyboardButton(text='Разработчик', callback_data='
 support_link = InlineKeyboardButton(text='Поддержка', callback_data='support', url='t.me/pijawca')
 support_link0 = InlineKeyboardButton(text='Поддержка', callback_data='support0', url='t.me/pijawca')
 channel = InlineKeyboardButton(text='Канал с новостями', callback_data='channelpijawca', url='t.me/pijawcatoday')
+sendtopijawcatoday = KeyboardButton(text='pijawcatoday')
+yes = InlineKeyboardButton(text='Да', callback_data='yes')
+no = InlineKeyboardButton(text='Нет', callback_data='no')
 
 
 def user_kb():
@@ -31,8 +34,8 @@ def user_kb():
 
 def admin_kb():
     builder = ReplyKeyboardBuilder()
-    builder.row(dbconn_button, crypto, pass2, pass4)
-    builder.row(pass3, back_button)
+    builder.row(dbconn_button, crypto, sendtopijawcatoday)
+    builder.row(pass4, pass3, back_button)
     return builder.as_markup(resize_keyboard=True)
 
 def deal_kb():
@@ -50,4 +53,9 @@ def feedback():
     builder = InlineKeyboardBuilder()
     builder.row(coder_link, support_link, support_link0)
     builder.row(channel)
+    return builder.as_markup()
+
+def pijawcatoday_kb():
+    builder = InlineKeyboardBuilder()
+    builder.row(yes, no)
     return builder.as_markup()
