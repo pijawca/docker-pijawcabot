@@ -9,6 +9,7 @@ from handlers.misc import bot
 from db.core import add_user, get_users
 from handlers.keyboards import user_kb, admin_kb, deal_kb, bots_kb, feedback, pijawcatoday_kb
 
+
 class MessagetopijawcaToday(StatesGroup):
     waiting_for_message = State()
 
@@ -65,11 +66,10 @@ class AdministrationMenu:
         await bot.send_message(chat_id=message.from_user.id, text=abcd.pijawcatoday())
         await state.set_state(MessagetopijawcaToday.waiting_for_message)
         
-    async def handler_pijawca_today(message: types.Message, state: FSMContext):
-        user_message = message.text
-        await message.reply(text=f'{user_message}\n Все верно?',
+    async def handler_pijawca_today(message: types.Message):
+        admin_message = message.text
+        await message.reply(text=f'{admin_message}\n\nВсе верно?',
                             reply_markup=pijawcatoday_kb())
-        await state.clear()
 
     async def pass3(message: types.Message):
         await message.answer(text=abcd.passed())
@@ -81,7 +81,7 @@ class AdministrationMenu:
         await message.answer(text=abcd.text_open_button(message.text),
                              reply_markup=user_kb())
 
-async def process_callback(callback_query: types.CallbackQuery, message: types.Message):
+async def process_callback(callback_query: types.CallbackQuery, state: FSMContext):
     data = callback_query.data
     user_id = callback_query.from_user.id
 
@@ -95,20 +95,24 @@ async def process_callback(callback_query: types.CallbackQuery, message: types.M
     if data in responses:
         await bot.send_message(user_id, responses[data], parse_mode=ParseMode.MARKDOWN)
     elif data == 'strojstavbot':
-        await bot.send_message(callback_query.from_user.id)
+        await bot.send_message(user_id)
     elif data == 'coder_link':
-        await bot.send_message(callback_query.from_user.id)
+        await bot.send_message(user_id)
     elif data == 'support':
-        await bot.send_message(callback_query.from_user.id)
+        await bot.send_message(user_id)
     elif data == 'support0':
-        await bot.send_message(callback_query.from_user.id)
+        await bot.send_message(user_id)
     elif data == 'channel':
-        await bot.send_message(callback_query.from_user.id)
+        await bot.send_message(user_id)
     elif data == 'yes':
-        await bot.send_message(chat_id='-1002193353022', text=message.text)
+        state_data = await state.get_data()
+        print(state_data)
+        admin_message = state_data.get('admin_message', '')
+        await bot.send_message(chat_id='-1002193353022', text=admin_message)
         await bot.answer_callback_query(callback_query.id, text='Сообщение отправлено в группу!')
     elif data == 'no':
         await bot.answer_callback_query(callback_query.id, text='Сообщение было очищенно!')
+        
     else:
         await bot.answer_callback_query(callback_query.id, text='Неизвестная команда')
 
@@ -122,7 +126,7 @@ def register_handlers_commands(dp: Dispatcher):
     dp.message.register(AdministrationMenu.dbconn, lambda message: message.text == '🟨 Тест с базой')
     dp.message.register(AdministrationMenu.back, lambda message: message.text == '↩️ Назад')
     dp.message.register(AdministrationMenu.crypto, lambda message: message.text == 'Чек кошелька')
-    dp.message.register(AdministrationMenu.pijawca_today, lambda message: message.text == 'pijawcatoday') 
+    dp.message.register(AdministrationMenu.pijawca_today, lambda message: message.text == '📨 @pijawcatoday') 
     dp.message.register(AdministrationMenu.handler_pijawca_today, StateFilter(MessagetopijawcaToday.waiting_for_message)) 
     dp.message.register(AdministrationMenu.pass3, lambda message: message.text == 'pass3')
     dp.message.register(AdministrationMenu.pass4, lambda message: message.text == 'pass4')
