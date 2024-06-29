@@ -16,6 +16,8 @@ idna==3.7
 magic-filter==1.0.12
 multidict==6.0.5
 platformdirs==4.2.2
+psycopg==3.1.19
+psycopg-binary==3.1.19
 pydantic==2.7.4
 pydantic_core==2.18.4
 python-coinmarketcap==0.5
