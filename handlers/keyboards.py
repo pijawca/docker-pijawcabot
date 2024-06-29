@@ -1,4 +1,4 @@
-from aiogram.types import KeyboardButton, InlineKeyboardButton
+from aiogram.types import KeyboardButton, InlineKeyboardButton, WebAppInfo
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 # Создание кнопок
@@ -7,9 +7,7 @@ support_button = KeyboardButton(text='💌 Связаться')
 back_button = KeyboardButton(text='↩️ Назад')
 dbconn_button = KeyboardButton(text='🟨 Тест с базой')
 crypto = KeyboardButton(text='Чек кошелька')
-pass2 = KeyboardButton(text='pass2')
-pass3 = KeyboardButton(text='pass3')
-pass4 = KeyboardButton(text='pass4')
+
 deal_button = KeyboardButton(text='🤝 Сделка')
 wallet_ton = InlineKeyboardButton(text='📩 Показать адрес TON', callback_data='show_wallet')
 test_pay = InlineKeyboardButton(text='0.01 TON', callback_data='test_pay')
@@ -35,7 +33,7 @@ def user_kb():
 def admin_kb():
     builder = ReplyKeyboardBuilder()
     builder.row(dbconn_button, crypto)
-    builder.row(sendtopijawcatoday, pass4, pass3)
+    builder.row(sendtopijawcatoday)
     builder.row(back_button)
     return builder.as_markup(resize_keyboard=True)
 

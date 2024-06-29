@@ -93,3 +93,9 @@ def pijawcatoday():
 Что написать в группу в @pijawcatoday?
 '''
     return text
+
+def tons():
+    text= f'''
+К сожалению в данный момент не работает. Заявка на рассмотрении у TON Wallet
+'''
+    return text

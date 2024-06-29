@@ -66,10 +66,11 @@ class AdministrationMenu:
         await bot.send_message(chat_id=message.from_user.id, text=abcd.pijawcatoday())
         await state.set_state(MessagetopijawcaToday.waiting_for_message)
         
-    async def handler_pijawca_today(message: types.Message):
+    async def handler_pijawca_today(message: types.Message, state: FSMContext):
         admin_message = message.text
-        await message.reply(text=f'{admin_message}\n\nВсе верно?',
-                            reply_markup=pijawcatoday_kb())
+        await state.update_data(admin_message=admin_message)
+        await message.reply(text=f'{admin_message}\n\nВсе верно?', reply_markup=pijawcatoday_kb())
+
 
     async def pass3(message: types.Message):
         await message.answer(text=abcd.passed())
@@ -86,33 +87,28 @@ async def process_callback(callback_query: types.CallbackQuery, state: FSMContex
     user_id = callback_query.from_user.id
 
     responses = {
-        'test_pay': 'К сожалению в данный момент не работает. Заявка на рассмотрении у TON Wallet',
-        'half_pay': 'К сожалению в данный момент не работает. Заявка на рассмотрении у TON Wallet',
-        'one_pay': 'К сожалению в данный момент не работает. Заявка на рассмотрении у TON Wallet',
-        'show_wallet': abcd.show_wallet()
+        'test_pay': abcd.tons(),
+        'half_pay': abcd.tons(),
+        'one_pay': abcd.tons(),
+        'show_wallet': abcd.show_wallet(),
+        'strojstavbot': None,
+        'coder_link': None,
+        'support': None,
+        'support0': None,
+        'channel': None,
+        'tapswap': None,
+        'hotwallet': None
     }
 
     if data in responses:
         await bot.send_message(user_id, responses[data], parse_mode=ParseMode.MARKDOWN)
-    elif data == 'strojstavbot':
-        await bot.send_message(user_id)
-    elif data == 'coder_link':
-        await bot.send_message(user_id)
-    elif data == 'support':
-        await bot.send_message(user_id)
-    elif data == 'support0':
-        await bot.send_message(user_id)
-    elif data == 'channel':
-        await bot.send_message(user_id)
     elif data == 'yes':
         state_data = await state.get_data()
-        print(state_data)
         admin_message = state_data.get('admin_message', '')
         await bot.send_message(chat_id='-1002193353022', text=admin_message)
         await bot.answer_callback_query(callback_query.id, text='Сообщение отправлено в группу!')
     elif data == 'no':
         await bot.answer_callback_query(callback_query.id, text='Сообщение было очищенно!')
-        
     else:
         await bot.answer_callback_query(callback_query.id, text='Неизвестная команда')
 
@@ -128,6 +124,4 @@ def register_handlers_commands(dp: Dispatcher):
     dp.message.register(AdministrationMenu.crypto, lambda message: message.text == 'Чек кошелька')
     dp.message.register(AdministrationMenu.pijawca_today, lambda message: message.text == '📨 @pijawcatoday') 
     dp.message.register(AdministrationMenu.handler_pijawca_today, StateFilter(MessagetopijawcaToday.waiting_for_message)) 
-    dp.message.register(AdministrationMenu.pass3, lambda message: message.text == 'pass3')
-    dp.message.register(AdministrationMenu.pass4, lambda message: message.text == 'pass4')
     dp.callback_query.register(process_callback)
