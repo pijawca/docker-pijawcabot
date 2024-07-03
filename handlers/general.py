@@ -7,7 +7,8 @@ from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from handlers.misc import bot
 from db.core import add_user, get_users
-from handlers.keyboards import user_kb, admin_kb, deal_kb, bots_kb, feedback, pijawcatoday_kb
+from handlers.keyboards import user_kb, admin_kb, deal_kb, bots_kb, feedback, sendTo
+from listgroups import groups
 
 
 class MessagetopijawcaToday(StatesGroup):
@@ -61,16 +62,15 @@ class AdministrationMenu:
     async def crypto(message: types.Message):
         await message.answer(text=abcd.crypto(),
                              parse_mode=ParseMode.MARKDOWN)
-
-    async def pijawca_today(message: types.Message, state: FSMContext):
-        await bot.send_message(chat_id=message.from_user.id, text=abcd.pijawcatoday())
-        await state.set_state(MessagetopijawcaToday.waiting_for_message)
         
-    async def handler_pijawca_today(message: types.Message, state: FSMContext):
-        admin_message = message.text
-        await state.update_data(admin_message=admin_message)
-        await message.reply(text=f'{admin_message}\n\nВсе верно?', reply_markup=pijawcatoday_kb())
+    async def msg(message: types.Message, state: FSMContext):
+        await bot.send_message(chat_id=message.from_user.id, text=abcd.sendTo())
+        await state.set_state(MessagetopijawcaToday.waiting_for_message)
 
+    async def choice_group(message: types.Message, state: FSMContext):
+        _message = message.text
+        await state.update_data({"message": _message})
+        await message.reply(text=f'Выберите канал куда отправить сообщение', reply_markup=sendTo())
 
     async def pass3(message: types.Message):
         await message.answer(text=abcd.passed())
@@ -96,19 +96,60 @@ async def process_callback(callback_query: types.CallbackQuery, state: FSMContex
         'support': None,
         'support0': None,
         'channel': None,
-        'tapswap': None,
-        'hotwallet': None
     }
 
     if data in responses:
         await bot.send_message(user_id, responses[data], parse_mode=ParseMode.MARKDOWN)
-    elif data == 'yes':
+    elif data == 'pijawcatoday':
         state_data = await state.get_data()
-        admin_message = state_data.get('admin_message', '')
-        await bot.send_message(chat_id='-1002193353022', text=admin_message)
+        admin_message = state_data.get('message', '')
+        await bot.send_message(chat_id=groups['pijawcatoday'], text=admin_message)
         await bot.answer_callback_query(callback_query.id, text='Сообщение отправлено в группу!')
-    elif data == 'no':
-        await bot.answer_callback_query(callback_query.id, text='Сообщение было очищенно!')
+    elif data == 'cashmerchant':
+        state_data = await state.get_data()
+        admin_message = state_data.get('message', '')
+        await bot.send_message(chat_id=groups['cashmerchant'], text=admin_message)
+        await bot.answer_callback_query(callback_query.id, text='Сообщение отправлено в группу!')
+    elif data == 'lolzmerchant':
+        state_data = await state.get_data()
+        admin_message = state_data.get('message', '')
+        await bot.send_message(chat_id=groups['lolzmerchant'], text=admin_message)
+        await bot.answer_callback_query(callback_query.id, text='Сообщение отправлено в группу!')
+    elif data == 'tagmerchant':
+        state_data = await state.get_data()
+        admin_message = state_data.get('message', '')
+        await bot.send_message(chat_id=groups['tagmerchant'], text=admin_message)
+        await bot.answer_callback_query(callback_query.id, text='Сообщение отправлено в группу!')
+    elif data == 'swapmerchant':
+        state_data = await state.get_data()
+        admin_message = state_data.get('message', '')
+        await bot.send_message(chat_id=groups['swapmerchant'], text=admin_message)
+        await bot.answer_callback_query(callback_query.id, text='Сообщение отправлено в группу!')
+    elif data == 'xzelenka':
+        state_data = await state.get_data()
+        admin_message = state_data.get('message', '')
+        await bot.send_message(chat_id=groups['xzelenka'], text=admin_message)
+        await bot.answer_callback_query(callback_query.id, text='Сообщение отправлено в группу!')
+    elif data == 'tonmerchant':
+        state_data = await state.get_data()
+        admin_message = state_data.get('message', '')
+        await bot.send_message(chat_id=groups['tonmerchant'], text=admin_message)
+        await bot.answer_callback_query(callback_query.id, text='Сообщение отправлено в группу!')
+    elif data == 'gitcommitpull':
+        state_data = await state.get_data()
+        admin_message = state_data.get('message', '')
+        await bot.send_message(chat_id=groups['gitcommitpull'], text=admin_message)
+        await bot.answer_callback_query(callback_query.id, text='Сообщение отправлено в группу!')
+    elif data == 'nakedtoken':
+        state_data = await state.get_data()
+        admin_message = state_data.get('message', '')
+        await bot.send_message(chat_id=groups['nakedtoken'], text=admin_message)
+        await bot.answer_callback_query(callback_query.id, text='Сообщение отправлено в группу!')
+    elif data == 'orcsmustlive':
+        state_data = await state.get_data()
+        admin_message = state_data.get('message', '')
+        await bot.send_message(chat_id=groups['orcsmustlive'], text=admin_message)
+        await bot.answer_callback_query(callback_query.id, text='Сообщение отправлено в группу!')
     else:
         await bot.answer_callback_query(callback_query.id, text='Неизвестная команда')
 
@@ -122,6 +163,6 @@ def register_handlers_commands(dp: Dispatcher):
     dp.message.register(AdministrationMenu.dbconn, lambda message: message.text == '🟨 Тест с базой')
     dp.message.register(AdministrationMenu.back, lambda message: message.text == '↩️ Назад')
     dp.message.register(AdministrationMenu.crypto, lambda message: message.text == 'Чек кошелька')
-    dp.message.register(AdministrationMenu.pijawca_today, lambda message: message.text == '📨 @pijawcatoday') 
-    dp.message.register(AdministrationMenu.handler_pijawca_today, StateFilter(MessagetopijawcaToday.waiting_for_message)) 
+    dp.message.register(AdministrationMenu.msg, lambda message: message.text == '📨 Отправить в канал')
+    dp.message.register(AdministrationMenu.choice_group, StateFilter(MessagetopijawcaToday.waiting_for_message)) 
     dp.callback_query.register(process_callback)

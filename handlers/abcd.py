@@ -88,9 +88,9 @@ vol {cryptoparse.ton_status()[5]}
 '''
     return text 
 
-def pijawcatoday():
+def sendTo():
     text= f'''
-Что написать в группу в @pijawcatoday?
+Что написать в канал?
 '''
     return text
 

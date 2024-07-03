@@ -1,13 +1,13 @@
 from aiogram.types import KeyboardButton, InlineKeyboardButton, WebAppInfo
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
+from listgroups import groups
 
-# Создание кнопок
+
 admin_button = KeyboardButton(text='⚙️ Администрирование')
 support_button = KeyboardButton(text='💌 Связаться')
 back_button = KeyboardButton(text='↩️ Назад')
 dbconn_button = KeyboardButton(text='🟨 Тест с базой')
 crypto = KeyboardButton(text='Чек кошелька')
-
 deal_button = KeyboardButton(text='🤝 Сделка')
 wallet_ton = InlineKeyboardButton(text='📩 Показать адрес TON', callback_data='show_wallet')
 test_pay = InlineKeyboardButton(text='0.01 TON', callback_data='test_pay')
@@ -19,9 +19,7 @@ coder_link = InlineKeyboardButton(text='Разработчик', callback_data='
 support_link = InlineKeyboardButton(text='Поддержка', callback_data='support', url='t.me/pijawca')
 support_link0 = InlineKeyboardButton(text='Поддержка', callback_data='support0', url='t.me/pijawca')
 channel = InlineKeyboardButton(text='Канал с новостями', callback_data='channelpijawca', url='t.me/pijawcatoday')
-sendtopijawcatoday = KeyboardButton(text='📨 @pijawcatoday')
-yes = InlineKeyboardButton(text='Да', callback_data='yes')
-no = InlineKeyboardButton(text='Нет', callback_data='no')
+sendtogroups = KeyboardButton(text='📨 Отправить в канал')
 
 
 def user_kb():
@@ -32,8 +30,7 @@ def user_kb():
 
 def admin_kb():
     builder = ReplyKeyboardBuilder()
-    builder.row(dbconn_button, crypto)
-    builder.row(sendtopijawcatoday)
+    builder.row(dbconn_button, crypto, sendtogroups)
     builder.row(back_button)
     return builder.as_markup(resize_keyboard=True)
 
@@ -54,7 +51,9 @@ def feedback():
     builder.row(channel)
     return builder.as_markup()
 
-def pijawcatoday_kb():
+def sendTo():
     builder = InlineKeyboardBuilder()
-    builder.row(yes, no)
+    for i in groups:
+        b = InlineKeyboardButton(text=i, callback_data=i)
+        builder.row(b)
     return builder.as_markup()
