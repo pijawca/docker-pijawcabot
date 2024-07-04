@@ -2,49 +2,41 @@ import requests
 from config import API_KEY_MARKETCAP as api_key
 
 
-def ton_status():
+def get_ton_data(symbol, convert):
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
-
     parameters = {
-        'symbol': 'TON',
-        'convert': 'USD'
+        'symbol': symbol,
+        'convert': convert
     }
-
     headers = {
         'Accepts': 'application/json',
         'X-CMC_PRO_API_KEY': api_key,
     }
-
     response = requests.get(url, headers=headers, params=parameters)
-    data = response.json()
+    return response.json()
 
+
+def ton_status():
+    data = get_ton_data('TON', 'USD')
     if 'data' in data and 'TON' in data['data']:
         ton_data = data['data']['TON']
-        priceUsd = (f"{ton_data['quote']['USD']['price']}")[:4]
-        percentChange24h = f"{ton_data['quote']['USD']['percent_change_24h']:.2f}"
-        percentChange1h = f"{ton_data['quote']['USD']['percent_change_1h']:.2f}"
-        percentChange7d = f"{ton_data['quote']['USD']['percent_change_7d']:.2f}"
+        price_usd = f"{ton_data['quote']['USD']['price']:.2f}"
+        percent_change_24h = f"{ton_data['quote']['USD']['percent_change_24h']:.2f}"
+        percent_change_1h = f"{ton_data['quote']['USD']['percent_change_1h']:.2f}"
+        percent_change_7d = f"{ton_data['quote']['USD']['percent_change_7d']:.2f}"
         volume = f"{ton_data['quote']['USD']['volume_24h']:.2f}"
-        
     else:
-        priceUsd = None
-        percentChange24h = None
-    
-    parameters = {
-        'symbol': 'TON',
-        'convert': 'RUB'
-    }
-    
-    response = requests.get(url, headers=headers, params=parameters)
-    data = response.json()
+        price_usd = None
+        percent_change_24h = None
+        percent_change_1h = None
+        percent_change_7d = None
+        volume = None
 
+    data = get_ton_data('TON', 'RUB')
     if 'data' in data and 'TON' in data['data']:
         ton_data = data['data']['TON']
-        pricerub = (f"{ton_data['quote']['RUB']['price']}")[:6]
+        price_rub = f"{ton_data['quote']['RUB']['price']:.2f}"
     else:
-        pricerub = None
-        
-    return priceUsd, percentChange24h, pricerub, percentChange1h, percentChange7d, volume
+        price_rub = None
 
-def news():
-    pass
+    return price_usd, percent_change_24h, price_rub, percent_change_1h, percent_change_7d, volume

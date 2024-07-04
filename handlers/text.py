@@ -24,78 +24,61 @@ _Используйте клавиатуру, либо команды в мен�
     '''
     return text
 
-def text_dbconn():
+def test_dbconn():
     text = f'''
     {dbconn()}
     '''
     return text
 
-def text_open_button(location):
-    text= f'''
+def default_message(location):
+    text = f'''
     Вы перешли в {location}
     '''
     return text
 
 def denied_access(location):
-    text= f'''
+    text = f'''
     У вас нет доступа к {location}
     '''
     return text
 
-def passed():
-    text= f'''
-    pass
-    '''
-    return text
-
-def support():
-    text= f'''
-*Прямые ссылки*
-
-Администратор *pijawca* @pijawca - (По всем вопросам.)
-Поддержка *pass* @pass
-Поддержка *pass* @pass
-
-Канал @pijawcatoday
-    '''
-    return text
-
 def show_wallet():
-    text= f'''
-```UQC5ZNcP8k7G3LLNzuX2whcu2PamWdGnnn2GuXESf8uft-_P```
-'''
+    text = '''
+```UQBa4RzuM8dr4qBcHSoudfIE9mf5p6jrOs6BK48-pRNgo-fC```
+    '''
     return text
 
 def crypto():
+    status = cryptoparse.ton_status()
     payed = 6300
     ton = 9.27
-    math = float(cryptoparse.ton_status()[2]) * 9.272
+    math = float(status[2]) * 9.272
     total = int(math - payed)
     if total > 0:
         msg = f'🙂 {total}'
     elif total < 0:
         msg = f'😔 {total}'
     
-    text= f'''
+    text = f'''
 *TON*
 
-*$ {cryptoparse.ton_status()[0]}  |  ₽ {cryptoparse.ton_status()[2]}*
-vol {cryptoparse.ton_status()[5]}
-1h {cryptoparse.ton_status()[3]}  |  24h {cryptoparse.ton_status()[1]}  |  7d {cryptoparse.ton_status()[4]}
+*$ {status[0]}  |  ₽ {status[2]}*
+vol {status[5]}
+1h {status[3]}  |  24h {status[1]}  |  7d {status[4]}
 
 *TOTAL {payed}  |  {ton}*
 {msg}
 '''
     return text 
 
-def sendTo():
-    text= f'''
+def send_to():
+    text = f'''
 Что написать в канал?
 '''
     return text
 
 def tons():
-    text= f'''
+    text = f'''
 К сожалению в данный момент не работает. Заявка на рассмотрении у TON Wallet
 '''
     return text

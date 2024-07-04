@@ -40,10 +40,10 @@ services:
     command: sh -c "python -m run"
     networks:
       - postgres
-    restart: unless-stopped
     depends_on:
       - postgres
       - pgadmin
+    restart: unless-stopped
 
 networks:
   postgres:

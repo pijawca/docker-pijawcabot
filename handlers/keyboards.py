@@ -1,7 +1,6 @@
-from aiogram.types import KeyboardButton, InlineKeyboardButton, WebAppInfo
+from aiogram.types import KeyboardButton, InlineKeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 from listgroups import groups
-
 
 admin_button = KeyboardButton(text='⚙️ Администрирование')
 support_button = KeyboardButton(text='💌 Связаться')
@@ -9,18 +8,16 @@ back_button = KeyboardButton(text='↩️ Назад')
 dbconn_button = KeyboardButton(text='🟨 Тест с базой')
 crypto = KeyboardButton(text='Чек кошелька')
 deal_button = KeyboardButton(text='🤝 Сделка')
+sendtogroups = KeyboardButton(text='📨 Отправить в канал')
+bots_button = KeyboardButton(text='🔩 Список ботов')
+passbot = InlineKeyboardButton(text='в разработке', url='t.me/pijawca')
+coder_link = InlineKeyboardButton(text='Разработчик', url='t.me/pijawca')
+support_link = InlineKeyboardButton(text='Поддержка', url='t.me/pijawca')
+channel = InlineKeyboardButton(text='Канал с новостями', url='t.me/pijawcatoday')
 wallet_ton = InlineKeyboardButton(text='📩 Показать адрес TON', callback_data='show_wallet')
 test_pay = InlineKeyboardButton(text='0.01 TON', callback_data='test_pay')
 half_pay = InlineKeyboardButton(text='0.50 TON', callback_data='half_pay')
 one_pay = InlineKeyboardButton(text='1 TON', callback_data='one_pay')
-bots_button = KeyboardButton(text='🔩 Список ботов')
-strojstavbot = InlineKeyboardButton(text='@strojstavbot', callback_data='strojstavbot', url='t.me/strojstavbot')
-coder_link = InlineKeyboardButton(text='Разработчик', callback_data='coder', url='t.me/pijawca')
-support_link = InlineKeyboardButton(text='Поддержка', callback_data='support', url='t.me/pijawca')
-support_link0 = InlineKeyboardButton(text='Поддержка', callback_data='support0', url='t.me/pijawca')
-channel = InlineKeyboardButton(text='Канал с новостями', callback_data='channelpijawca', url='t.me/pijawcatoday')
-sendtogroups = KeyboardButton(text='📨 Отправить в канал')
-
 
 def user_kb():
     builder = ReplyKeyboardBuilder()
@@ -42,18 +39,18 @@ def deal_kb():
 
 def bots_kb():
     builder = InlineKeyboardBuilder()
-    builder.row(strojstavbot)
+    builder.row(passbot)
     return builder.as_markup()
 
-def feedback():
+def feedback_kb():
     builder = InlineKeyboardBuilder()
-    builder.row(coder_link, support_link, support_link0)
+    builder.row(coder_link, support_link)
     builder.row(channel)
     return builder.as_markup()
 
-def sendTo():
+def send_to_kb():
     builder = InlineKeyboardBuilder()
-    for i in groups:
-        b = InlineKeyboardButton(text=i, callback_data=i)
-        builder.row(b)
+    for group in groups:
+        button = InlineKeyboardButton(text=group, callback_data=group)
+        builder.row(button)
     return builder.as_markup()

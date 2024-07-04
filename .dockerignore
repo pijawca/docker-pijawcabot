@@ -3,4 +3,6 @@ venv
 __pycache__
 core/__pycache__
 handlers/__pycache__
-test.py
+plugins/__pycache__
+db/__pycache__
+text.txt
