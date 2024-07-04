@@ -67,8 +67,8 @@ def show_wallet():
     return text
 
 def crypto():
-    payed = 6700
-    ton = 9.272
+    payed = 6300
+    ton = 9.27
     math = float(cryptoparse.ton_status()[2]) * 9.272
     total = int(math - payed)
     if total > 0:

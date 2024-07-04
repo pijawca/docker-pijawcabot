@@ -130,10 +130,10 @@ async def process_callback(callback_query: types.CallbackQuery, state: FSMContex
         admin_message = state_data.get('message', '')
         await bot.send_message(chat_id=groups['xzelenka'], text=admin_message)
         await bot.answer_callback_query(callback_query.id, text='Сообщение отправлено в группу!')
-    elif data == 'tonmerchant':
+    elif data == 'tonmerchnt':
         state_data = await state.get_data()
         admin_message = state_data.get('message', '')
-        await bot.send_message(chat_id=groups['tonmerchant'], text=admin_message)
+        await bot.send_message(chat_id=groups['tonmerchnt'], text=admin_message)
         await bot.answer_callback_query(callback_query.id, text='Сообщение отправлено в группу!')
     elif data == 'gitcommitpull':
         state_data = await state.get_data()
