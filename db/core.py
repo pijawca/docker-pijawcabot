@@ -7,8 +7,8 @@ def add_user(user_id, nickname):
         conn = psycopg.connect(**db_params)
         with conn.cursor() as cur:
             cur.execute(
-                "INSERT INTO pijawcabot (user_id, nickname, who_is) VALUES (%s, %s, %s)",
-                (user_id, nickname, 'Пользователь')
+                "INSERT INTO pijawcabot (user_id, nickname, who_is, total_money, total_ton) VALUES (%s, %s, %s, %s, %s)",
+                (user_id, nickname, 'Пользователь', None, None)
             )
             conn.commit()
             response = 0
@@ -48,6 +48,19 @@ def get_users(user_id):
         with conn.cursor() as cur:
             cur.execute("SELECT who_is FROM pijawcabot WHERE user_id = %s;", (user_id,))
             response = cur.fetchone()[0]
+    except (Exception, psycopg.Error) as error:
+        response = f'Ошибка PostgreSQL: {error}'
+    finally:
+        cur.close()
+        conn.close()
+    return response
+
+def get_total(user_id):
+    try:
+        conn = psycopg.connect(**db_params)
+        with conn.cursor() as cur:
+            cur.execute("SELECT total_money, total_ton FROM pijawcabot WHERE user_id = %s;", (user_id,))
+            response = cur.fetchone()
     except (Exception, psycopg.Error) as error:
         response = f'Ошибка PostgreSQL: {error}'
     finally:

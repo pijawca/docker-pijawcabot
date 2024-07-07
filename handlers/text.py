@@ -1,7 +1,6 @@
 from datetime import datetime
 from plugins import cryptoparse
-from db.core import dbconn
-from config import TOTAL_MONEY, TOTAL_TON
+from db.core import dbconn, get_total
 
 def start(username, who_is):
     current_hour = datetime.now().hour
@@ -48,15 +47,19 @@ def show_wallet():
     '''
     return text
 
-def crypto():
-    status = cryptoparse.ton_status()
-    math = float(status[2]) * TOTAL_TON
-    total = int(math - TOTAL_MONEY)
-    if total > 0:
-        msg = f'🙂 {total}'
-    elif total < 0:
-        msg = f'😔 {total}'
-    
+def crypto(TOTAL_TON, TOTAL_MONEY):
+    msg = ''
+    try:
+        status = cryptoparse.ton_status()
+        math = float(status[2]) * float(TOTAL_TON)
+        total = int(math - float(TOTAL_MONEY))
+        if total > 0:
+            msg = f'🙂 {total}'
+        else:
+            msg = f'😔 {total}'
+    except (ValueError, TypeError) as error:
+        print(f'Ошибка: {error}')
+
     text = f'''
 *TON*
 
@@ -67,7 +70,7 @@ vol {status[5]}
 *TOTAL {TOTAL_MONEY}  |  {TOTAL_TON}*
 {msg}
 '''
-    return text 
+    return text
 
 def send_to():
     text = f'''

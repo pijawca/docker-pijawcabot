@@ -1,12 +1,11 @@
 from handlers import text
 from aiogram import types, Dispatcher
 from aiogram.enums import ParseMode
-from aiogram.types import InputFile
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from handlers.misc import bot
-from db.core import add_user, get_users
+from db.core import add_user, get_users, get_total
 from handlers.keyboards import user_kb, admin_kb, deal_kb, bots_kb, feedback_kb, send_to_kb
 from listgroups import groups
 
@@ -74,8 +73,9 @@ class AdministrationMenu:
         await message.answer(text=text.test_dbconn())
 
     async def crypto(message: types.Message):
+        get = get_total(message.from_user.id)
         await message.answer(
-            text=text.crypto(),
+            text=text.crypto(get[1], get[0]),
             parse_mode=ParseMode.MARKDOWN
         )
 
